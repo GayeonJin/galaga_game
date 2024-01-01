@@ -4,9 +4,6 @@ import sys
 import pygame
 import random
 
-import csv
-from io import StringIO
-
 from gresource import *
 
 class enemy_object :
@@ -67,6 +64,7 @@ class enemy_group :
         self.delete_indexes = []
 
         self.booms = []
+        self.boom_img = pygame.image.load(get_img_resource('id_boom'))
 
     def create(self) :
         self.enemy_tick += 1
@@ -95,32 +93,20 @@ class enemy_group :
 
         return crashed
 
+    def kill(self, object) :
+        self.booms.append([10, object.x, object.y])
+        self.enemies.remove(object)
+
     def draw(self) :
         for enemy in self.enemies :
             enemy.draw()
 
-        for i in range(len(self.booms)) :
-            boom = self.booms.pop(0)
-            if boom.draw() == True :
-                self.booms.append(boom)
+        for index, boom in enumerate(self.booms) :
+            gctrl.surface.blit(self.boom_img, (boom[1], boom[2]))
 
-class boom_object :
-    global gctrl
-
-    def __init__(self, x, y) :
-        self.x = x
-        self.y = y
-        self.count = 10
-
-        self.boom_img = pygame.image.load(get_img_resource('id_boom'))
-
-    def draw(self) :
-        self.count -= 1
-        if self.count <= 0 :
-            return False
-
-        gctrl.surface.blit(self.boom_img, (self.x, self.y))
-        return True
+            boom[0] -= 1
+            if boom[0] == 0 :
+                del self.booms[index]
 
 if __name__ == '__main__' :
     print('enemy object')

@@ -9,7 +9,7 @@ from fighter import *
 from enemy import *
 from gresource import *
 
-TITLE_STR = "Typing Game"
+TITLE_STR = "Galaga Game"
 
 class player :
     SCORE_UNIT = 10
@@ -40,9 +40,7 @@ class player :
     def draw_score(self, count) :
         gctrl.draw_string("Score : " + str(count), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_LEFT)
 
-class game :
-    INPUTTEXT_YOFFSET = 30
-
+class galaga_game :
     def __init__(self) :
         # initialize pygame
         pygame.init()
@@ -139,7 +137,7 @@ class game :
             # Draw bullet
             for i, enemy in enumerate(enemy_ctrl.enemies) :
                 if bullets.move(enemy) == bulles_group.SHOT_ENEMY :
-                    enemy_ctrl.enemies.remove(enemy)
+                    enemy_ctrl.kill(enemy)
                     game_player.update_score()
 
             bullets.draw()
@@ -165,6 +163,6 @@ class game :
         self.terminate()
 
 if __name__ == '__main__' :
-    typing_game = game() 
-    typing_game.run()
+    game = galaga_game() 
+    game.run()
 

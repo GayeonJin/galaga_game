@@ -6,15 +6,13 @@ import random
 
 from gresource import *
 
-
-
-SOUND_MUTE = False
+SOUND_MUTE = True
 
 class game_object :
     global gctrl
 
     FIGHTER_SPEED = 5
-    
+
     def __init__(self, x, y, resource_id) :
         if resource_id != None :
             resource_path = get_img_resource(resource_id)
