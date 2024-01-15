@@ -114,7 +114,7 @@ class fighter_object(game_object) :
         self.set_life_count(3)
 
     def init_position(self) :
-        self.set_position(gctrl.width / 2, gctrl.height * 0.9)
+        self.set_position(gctrl.width / 2, gctrl.height * 0.85)
 
     def check_crash(self, enemy, sound_object) :
         is_crash = super().check_crash(enemy, sound_object)

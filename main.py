@@ -9,7 +9,7 @@ from fighter import *
 from enemy import *
 from gresource import *
 
-TITLE_STR = "Galaga Game"
+TITLE_STR = "Galaga"
 
 class player :
     SCORE_UNIT = 10
@@ -21,6 +21,8 @@ class player :
     def __init__(self) :
         self.life = player.LIFE_COUNT
         self.score = 0
+
+        self.img_fighter = pygame.image.load(get_img_resource('id_fighter'))
 
     def update_score(self) :
         self.score += player.SCORE_UNIT
@@ -35,7 +37,15 @@ class player :
             return False
 
     def draw_life(self, count) :
-        gctrl.draw_string("Life : " + str(count), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_RIGHT)
+        # gctrl.draw_string("Life : " + str(count), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_RIGHT)
+        x = player.STATUS_XOFFSET
+        y = gctrl.height - self.img_fighter.get_height() - player.STATUS_YOFFSET
+        for i in range(count - 1) :
+            gctrl.surface.blit(self.img_fighter, (x, y))
+            x += self.img_fighter.get_width()
+
+    def draw_stage(self, stage) :
+        gctrl.draw_string("Stage : " + str(stage), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_RIGHT)
 
     def draw_score(self, count) :
         gctrl.draw_string("Score : " + str(count), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_LEFT)
@@ -68,7 +78,8 @@ class galaga_game :
     def start(self) :
         # Clear gamepad
         gctrl.surface.fill(COLOR_WHITE)
-        gctrl.draw_string("press any key", 0, 0, ALIGN_CENTER, 40, COLOR_RED)
+        gctrl.draw_string(TITLE_STR, 0, 0, ALIGN_CENTER, 60, COLOR_BLACK)
+        gctrl.draw_string("press any key", 0, gctrl.height / 2 + 60, ALIGN_CENTER | ALIGN_TOP, 30, COLOR_RED)
 
         while True :
             for event in pygame.event.get():
@@ -152,6 +163,7 @@ class galaga_game :
             # Draw Score
             game_player.draw_score(game_player.score)
             game_player.draw_life(game_player.life)
+            game_player.draw_stage(1)
 
             pygame.display.update()
             self.clock.tick(FPS)
