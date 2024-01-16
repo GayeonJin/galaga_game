@@ -120,7 +120,7 @@ class fighter_object(game_object) :
         is_crash = super().check_crash(enemy, sound_object)
         if is_crash == True :
             self.kill_life()
-            enemy.kill_life()
+            #enemy.kill_life()
             self.boom_count = 10
 
         return is_crash

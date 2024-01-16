@@ -9,6 +9,8 @@ from gresource import *
 class enemy_object :
     global gctrl
 
+    ENEMY_SPEED = 0.5
+
     def __init__(self) :
         self.object = pygame.image.load(get_img_resource('id_enemy'))
         self.width = self.object.get_width()
@@ -19,8 +21,7 @@ class enemy_object :
         self.ex = self.x + self.width - 1
         self.ey = self.y + self.height - 1
 
-        self.dx = 0
-        self.dy = 5
+        self.set_speed(0, enemy_object.ENEMY_SPEED)
        
     def set_speed(self, del_x, del_y) :
         self.dx = del_x
@@ -39,7 +40,7 @@ class enemy_object :
 
     def draw(self) :
         if self.object != None :
-            gctrl.surface.blit(self.object, (self.x, self.y))            
+            gctrl.surface.blit(self.object, (int(self.x), int(self.y)))            
 
     def is_out_of_range(self) :
         if self.x <= 0 or self.x >= gctrl.width :
@@ -49,8 +50,7 @@ class enemy_object :
         else :
             return False
 
-DOWN_SPEED = 20
-ENEMY_CREATION_SPEED = 100
+ENEMY_CREATION_SPEED = 2
 ENEMY_MAX = 10
 
 class enemy_group :
@@ -58,7 +58,6 @@ class enemy_group :
         self.enemies = []
         self.max_enemy = ENEMY_MAX
 
-        self.move_count = 0
         self.enemy_tick = 0
 
         self.delete_indexes = []
@@ -77,14 +76,11 @@ class enemy_group :
     def move(self) :
         crashed = False
 
-        self.move_count += 1
-        if self.move_count > DOWN_SPEED :
-            for i, enemy in enumerate(self.enemies) :
-                enemy.move()
-                if enemy.is_out_of_range() == True :
-                    self.delete_indexes.append(i)
-                    crashed = True
-            self.move_count = 0
+        for i, enemy in enumerate(self.enemies) :
+            enemy.move()
+            if enemy.is_out_of_range() == True :
+                self.delete_indexes.append(i)
+                crashed = True
 
         for index in self.delete_indexes :
             del self.enemies[index]

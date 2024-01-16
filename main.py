@@ -73,7 +73,7 @@ class galaga_game :
         gctrl.draw_string('Game Over', 0, 0, ALIGN_CENTER, 80, COLOR_RED)
         pygame.display.update()
         sleep(2)
-        self.run_game()
+        self.run()
 
     def start(self) :
         # Clear gamepad
@@ -157,7 +157,11 @@ class galaga_game :
             fighter.move()
 
             # Check crash
-            #fighter.check_crash(enemy, snd_explosion)
+            for i, enemy in enumerate(enemy_ctrl.enemies) :
+                if fighter.check_crash(enemy, snd_explosion) == True :
+                    enemy_ctrl.kill(enemy)
+                    game_player.life = fighter.life_count
+
             fighter.draw()
 
             # Draw Score
