@@ -132,7 +132,7 @@ class fighter_object(game_object) :
             self.boom_count -= 1
 
 class bulles_group :
-    BULLET_SPEED = -15
+    BULLET_SPEED = -1
     SHOT_ENEMY = 1
 
     def __init__(self, speed = BULLET_SPEED) :

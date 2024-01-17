@@ -13,7 +13,8 @@ resource_path = ''
 
 resource_image = {
     'id_fighter' : 'image/galaga_fighter.png',
-    'id_enemy' : 'image/space_invader.png',
+    'id_enemy0' : 'image/space_invader.png',
+    'id_enemy1' : 'image/space_invader1.png',
     'id_bullet' : 'image/bullet.png',
     'id_boom' : 'image/boom.png'
 }

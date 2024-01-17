@@ -11,8 +11,8 @@ class enemy_object :
 
     ENEMY_SPEED = 0.5
 
-    def __init__(self) :
-        self.object = pygame.image.load(get_img_resource('id_enemy'))
+    def __init__(self, res_id = 'id_enemy0') :
+        self.object = pygame.image.load(get_img_resource(res_id))
         self.width = self.object.get_width()
         self.height = self.object.get_height()
 
@@ -70,8 +70,13 @@ class enemy_group :
         if self.enemy_tick > ENEMY_CREATION_SPEED :
             self.enemy_tick = 0
         
-            if len(self.enemies) < self.max_enemy :
-                self.enemies.append(enemy_object())
+            num_enemies = len(self.enemies)
+            if num_enemies < self.max_enemy :
+                color = random.randint(0, 1)
+                if color == 0 :
+                    self.enemies.append(enemy_object())
+                else :
+                    self.enemies.append(enemy_object('id_enemy1'))
 
     def move(self) :
         crashed = False

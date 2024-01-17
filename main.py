@@ -70,7 +70,7 @@ class galaga_game :
         sys.exit()
 
     def game_over(self) :
-        gctrl.draw_string('Game Over', 0, 0, ALIGN_CENTER, 80, COLOR_RED)
+        gctrl.draw_string('Game Over', 0, 0, ALIGN_CENTER, 60, COLOR_RED)
         pygame.display.update()
         sleep(2)
         self.run()
@@ -109,6 +109,8 @@ class galaga_game :
 
         enemy_ctrl = enemy_group()
 
+        bullet_pressed = False
+        bullet_timer = 0
         crashed = False
         while not crashed :
             for event in pygame.event.get() :
@@ -121,15 +123,24 @@ class galaga_game :
                     elif event.key == pygame.K_RIGHT :
                         fighter.set_speed(fighter_object.FIGHTER_SPEED, 0)
                     elif event.key == pygame.K_SPACE :
-                        bullet_x = fighter.x + fighter.width / 2
-                        bullet_y = fighter.y
-                        bullets.add(bullet_x, bullet_y)
+                        bullet_pressed = True
+                        bullet_timer = 0
                     if event.key == pygame.K_F10 :
                         gctrl.save_scr_capture(TITLE_STR)
 
                 if event.type == pygame.KEYUP :
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         fighter.set_speed(0, 0)
+                    elif event.key == pygame.K_SPACE :
+                        bullet_pressed = False
+
+            if bullet_pressed == True :
+                bullet_timer += 1
+                if bullet_timer >= 5 :
+                    bullet_x = fighter.x + fighter.width / 2
+                    bullet_y = fighter.y
+                    bullets.add(bullet_x, bullet_y)
+                    bullet_timer = 0
 
             # Clear gamepad
             gctrl.surface.fill(COLOR_BLACK)
