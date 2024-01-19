@@ -5,9 +5,11 @@ import pygame
 import random
 from time import sleep
 
+from gobject import *
+from gresource import *
 from fighter import *
 from enemy import *
-from gresource import *
+from bullet import *
 
 TITLE_STR = "Galaga"
 
