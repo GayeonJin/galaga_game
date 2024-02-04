@@ -78,6 +78,12 @@ class enemy_group :
                 else :
                     self.enemies.append(enemy_object('id_enemy1'))
 
+    def clear_all(self) :
+        self.enemies = []
+        self.enemy_tick = 0
+        self.delete_indexes = []
+        self.booms = []
+
     def move(self) :
         crashed = False
 

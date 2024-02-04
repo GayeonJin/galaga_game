@@ -22,6 +22,9 @@ class bulles_group :
     def add(self, x, y) :
         self.bullets.append(game_object(x, y, 'id_bullet'))
 
+    def clear_all(self) :
+        self.bullets = []
+
     def move(self, enemy) :
         is_shot = 0
 

@@ -55,32 +55,41 @@ class player :
 class stage :
     STATE_WAIT = 0
     STATE_RUN = 1
+    STATE_NEXT = 2
 
     def __init__(self) :
         self.stage_no = 1
-        self.stage_state = stage.STATE_WAIT
+        self.state = stage.STATE_WAIT
         self.stage_timer = 0
 
         self.enemy_count = 0
-        self.max_enemy_count = 40
+        self.enemy_max = 40
         self.kill_enemy_count = 0
+        self.kill_enemy_max = 10
 
     def is_run(self) :
-        if self.stage_state == stage.STATE_RUN :
+        if self.state == stage.STATE_RUN :
             return True
         else :
             return False
 
     def update_kill_enemy(self) :
         self.kill_enemy_count += 1
+        print('kill enemy : %d'%self.kill_enemy_count)
+        if self.kill_enemy_count >= self.kill_enemy_max :
+            self.stage_no += 1
+            self.kill_enemy_count = 0
+            self.kill_enemy_max += 10
+            self.state = stage.STATE_NEXT
+            print('go to next stage')
 
     def draw(self) :
-        if self.stage_state == stage.STATE_WAIT :
+        if self.state == stage.STATE_WAIT :
             gctrl.draw_string("Stage " + str(self.stage_no), 0, gctrl.height / 2, ALIGN_CENTER | ALIGN_TOP, 30, COLOR_WHITE)
             
             self.stage_timer += 1
             if self.stage_timer >= 3 * FPS : 
-                self.stage_state = stage.STATE_RUN
+                self.state = stage.STATE_RUN
                 self.stage_timer = 0
 
 class galaga_game :
@@ -179,7 +188,7 @@ class galaga_game :
             # Clear gamepad
             gctrl.surface.fill(COLOR_BLACK)
 
-            if stage_mgr.is_run() == True :
+            if stage_mgr.state == stage.STATE_RUN :
                 # Draw background
                 #gctrl.surface.blit(self.bg_img, (0, 0))
 
@@ -196,6 +205,7 @@ class galaga_game :
                     if bullets.move(enemy) == bulles_group.SHOT_ENEMY :
                         enemy_ctrl.kill(enemy)
                         game_player.update_score()
+                        stage_mgr.update_kill_enemy()
 
                 bullets.draw()
 
@@ -209,6 +219,10 @@ class galaga_game :
                         game_player.life = fighter.life_count
 
                 fighter.draw()
+            elif stage_mgr.state == stage.STATE_NEXT :
+                enemy_ctrl.clear_all()
+                bullets.clear_all()
+                stage_mgr.state = stage.STATE_WAIT
             else :
                 stage_mgr.draw()
 
