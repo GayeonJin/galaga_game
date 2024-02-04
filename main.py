@@ -52,6 +52,37 @@ class player :
     def draw_score(self, count) :
         gctrl.draw_string("Score : " + str(count), player.STATUS_XOFFSET, player.STATUS_YOFFSET, ALIGN_LEFT)
 
+class stage :
+    STATE_WAIT = 0
+    STATE_RUN = 1
+
+    def __init__(self) :
+        self.stage_no = 1
+        self.stage_state = stage.STATE_WAIT
+        self.stage_timer = 0
+
+        self.enemy_count = 0
+        self.max_enemy_count = 40
+        self.kill_enemy_count = 0
+
+    def is_run(self) :
+        if self.stage_state == stage.STATE_RUN :
+            return True
+        else :
+            return False
+
+    def update_kill_enemy(self) :
+        self.kill_enemy_count += 1
+
+    def draw(self) :
+        if self.stage_state == stage.STATE_WAIT :
+            gctrl.draw_string("Stage " + str(self.stage_no), 0, gctrl.height / 2, ALIGN_CENTER | ALIGN_TOP, 30, COLOR_WHITE)
+            
+            self.stage_timer += 1
+            if self.stage_timer >= 3 * FPS : 
+                self.stage_state = stage.STATE_RUN
+                self.stage_timer = 0
+
 class galaga_game :
     def __init__(self) :
         # initialize pygame
@@ -104,6 +135,7 @@ class galaga_game :
 
         # game player
         game_player = player()
+        stage_mgr = stage()
 
         # aircraft
         fighter = fighter_object(0, 0, 'id_fighter')
@@ -147,40 +179,43 @@ class galaga_game :
             # Clear gamepad
             gctrl.surface.fill(COLOR_BLACK)
 
-            # Draw background
-            #gctrl.surface.blit(self.bg_img, (0, 0))
+            if stage_mgr.is_run() == True :
+                # Draw background
+                #gctrl.surface.blit(self.bg_img, (0, 0))
 
-            # Create and move enemy
-            enemy_ctrl.create()
-            if enemy_ctrl.move() == True :
-                game_player.kill_life()
+                # Create and move enemy
+                enemy_ctrl.create()
+                if enemy_ctrl.move() == True :
+                    game_player.kill_life()
 
-            # Draw enemy
-            enemy_ctrl.draw()
+                # Draw enemy
+                enemy_ctrl.draw()
 
-            # Draw bullet
-            for i, enemy in enumerate(enemy_ctrl.enemies) :
-                if bullets.move(enemy) == bulles_group.SHOT_ENEMY :
-                    enemy_ctrl.kill(enemy)
-                    game_player.update_score()
+                # Draw bullet
+                for i, enemy in enumerate(enemy_ctrl.enemies) :
+                    if bullets.move(enemy) == bulles_group.SHOT_ENEMY :
+                        enemy_ctrl.kill(enemy)
+                        game_player.update_score()
 
-            bullets.draw()
+                bullets.draw()
 
-            # Update aircraft
-            fighter.move()
+                # Update aircraft
+                fighter.move()
 
-            # Check crash
-            for i, enemy in enumerate(enemy_ctrl.enemies) :
-                if fighter.check_crash(enemy, snd_explosion) == True :
-                    enemy_ctrl.kill(enemy)
-                    game_player.life = fighter.life_count
+                # Check crash
+                for i, enemy in enumerate(enemy_ctrl.enemies) :
+                    if fighter.check_crash(enemy, snd_explosion) == True :
+                        enemy_ctrl.kill(enemy)
+                        game_player.life = fighter.life_count
 
-            fighter.draw()
+                fighter.draw()
+            else :
+                stage_mgr.draw()
 
             # Draw Score
             game_player.draw_score(game_player.score)
             game_player.draw_life(game_player.life)
-            game_player.draw_stage(1)
+            game_player.draw_stage(stage_mgr.stage_no)
 
             pygame.display.update()
             self.clock.tick(FPS)
