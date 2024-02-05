@@ -50,13 +50,14 @@ class enemy_object :
         else :
             return False
 
-ENEMY_CREATION_SPEED = 2
-ENEMY_MAX = 10
+ENEMY_CREATION_SPEED = 4
+ENEMY_MAX = 20
 
 class enemy_group :
     def __init__(self) :
         self.enemies = []
-        self.max_enemy = ENEMY_MAX
+        self.enemies_max = ENEMY_MAX
+        self.enemies_count = 0
 
         self.enemy_tick = 0
 
@@ -65,21 +66,30 @@ class enemy_group :
         self.booms = []
         self.boom_img = pygame.image.load(get_img_resource('id_boom'))
 
+    def set_max_enemies(self, num) :
+        self.enemies_max = num
+
     def create(self) :
-        self.enemy_tick += 1
-        if self.enemy_tick > ENEMY_CREATION_SPEED :
-            self.enemy_tick = 0
+        if self.enemies_count < self.enemies_max :
+            self.enemy_tick += 1
+            if self.enemy_tick > ENEMY_CREATION_SPEED :
+                self.enemy_tick = 0
         
-            num_enemies = len(self.enemies)
-            if num_enemies < self.max_enemy :
                 color = random.randint(0, 1)
                 if color == 0 :
                     self.enemies.append(enemy_object())
                 else :
                     self.enemies.append(enemy_object('id_enemy1'))
 
+                self.enemies_count += 1
+                return True
+        
+        return False
+
     def clear_all(self) :
         self.enemies = []
+        self.enemies_count = 0
+        
         self.enemy_tick = 0
         self.delete_indexes = []
         self.booms = []

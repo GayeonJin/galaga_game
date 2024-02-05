@@ -67,19 +67,13 @@ class stage :
         self.kill_enemy_count = 0
         self.kill_enemy_max = 10
 
-    def is_run(self) :
-        if self.state == stage.STATE_RUN :
-            return True
-        else :
-            return False
-
     def update_kill_enemy(self) :
         self.kill_enemy_count += 1
         print('kill enemy : %d'%self.kill_enemy_count)
         if self.kill_enemy_count >= self.kill_enemy_max :
             self.stage_no += 1
             self.kill_enemy_count = 0
-            self.kill_enemy_max += 10
+            #self.kill_enemy_max += 10
             self.state = stage.STATE_NEXT
             print('go to next stage')
 
