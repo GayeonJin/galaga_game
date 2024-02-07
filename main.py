@@ -66,6 +66,10 @@ class stage :
         self.enemy_max = 40
         self.kill_enemy_count = 0
         self.kill_enemy_max = 10
+        self.missed_enemy_count = 0
+
+    def update_missed_enemy(self, num) :
+        self.missed_enemy_count += num
 
     def update_kill_enemy(self) :
         self.kill_enemy_count += 1
@@ -74,6 +78,7 @@ class stage :
             self.stage_no += 1
             self.kill_enemy_count = 0
             #self.kill_enemy_max += 10
+            self.missed_enemy_count = 0
             self.state = stage.STATE_NEXT
             print('go to next stage')
 
@@ -187,9 +192,11 @@ class galaga_game :
                 #gctrl.surface.blit(self.bg_img, (0, 0))
 
                 # Create and move enemy
-                enemy_ctrl.create()
-                if enemy_ctrl.move() == True :
+                enemy_ctrl.create_one()
+                missed_count = enemy_ctrl.move()
+                if missed_count > 0 :
                     game_player.kill_life()
+                    stage_mgr.update_missed_enemy(missed_count)
 
                 # Draw enemy
                 enemy_ctrl.draw()
